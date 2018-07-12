@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "balance_accounts")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"creation_date", "update_date"}, allowGetters = true)
+/*  @JsonIgnoreProperties(value = {"creation_date", "update_date"}, allowGetters = true)  */
 public class BalanceAccounts implements Serializable {
 
     @EmbeddedId
@@ -44,22 +44,27 @@ public class BalanceAccounts implements Serializable {
     }
 
     public void setAmount(Double amount) {
+
         this.amount = amount;
     }
 
     public Date getCreation_date() {
+
         return creation_date;
     }
 
     public void setCreation_date(Date creation_date) {
+
         this.creation_date = creation_date;
     }
 
     public Date getUpdate_date() {
+
         return update_date;
     }
 
     public void setUpdate_date(Date update_date) {
+
         this.update_date = update_date;
     }
 
