@@ -27,14 +27,17 @@ public class BalanceAccountsId implements Serializable {
     }
 
     public Long getMonthly_period() {
+
         return monthly_period;
     }
 
     public Integer getUser_business_id() {
+
         return user_business_id;
     }
 
     public Integer getAccount_id() {
+
         return account_id;
     }
 }
