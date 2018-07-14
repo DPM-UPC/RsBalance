@@ -2,13 +2,14 @@ package com.finance.rsbalance.controller;
 
 
 import com.finance.rsbalance.model.BalanceAccounts;
+import com.finance.rsbalance.model.BalanceAccountsId;
 import com.finance.rsbalance.repository.BalanceAccountsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
-
+import javax.persistence.IdClass;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class BalanceAccountsController {
     @Autowired
     BalanceAccountsRepository balanceAccountsRepository;
 
-    BalanceAccounts _balance;
+    /* BalanceAccounts _balance;  */
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public List<Map> getBalanceAccountsByPeriodAndBusinessAndAccount(@RequestParam(value = "period")   Long period,
@@ -39,24 +40,27 @@ public class BalanceAccountsController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean postBalanceAccounts(@Valid @RequestBody BalanceAccounts balanceAccounts) {
+    public boolean postBalanceAccounts(@Valid @RequestBody Map<String , Object> balanceAccountsMap) {
 
         List<Map> _result;
 
-        System.out.println("realizar consulta....");
+        System.out.println("realizar consulta...."+balanceAccountsMap.toString());
 
-        _result = balanceAccountsRepository.findBalanceAccountsByPeriodAndBusinessAndAccount(balanceAccounts.getId().getMonthly_period(),
-                                                                                             balanceAccounts.getId().getUser_business_id(),
-                                                                                             balanceAccounts.getId().getAccount_id() );
+        Long _period = new Long(balanceAccountsMap.get("period").toString());
+        Integer _user_business = new Integer(balanceAccountsMap.get("user_business").toString());
+        Integer _account = new Integer(balanceAccountsMap.get("account").toString());
+        Double _amount = new Double(balanceAccountsMap.get("amount").toString());
 
-        if (_result !=null) {
+        _result = balanceAccountsRepository.findBalanceAccountsByPeriodAndBusinessAndAccount( _period , _user_business , _account );
+
+
+
+        if (_result !=null && _result.size() > 0) {
             /*  update amount of Accounts Balance  */
+
             System.out.println("update amount of Accounts Balance");
             try {
-                balanceAccountsRepository.updateAmountOfBalanceAccountsByPeriodAndBusinessAndAccount(balanceAccounts.getId().getMonthly_period(),
-                                                                                                     balanceAccounts.getId().getUser_business_id(),
-                                                                                                     balanceAccounts.getId().getAccount_id(),
-                                                                                                     balanceAccounts.getAmount());
+                balanceAccountsRepository.updateAmountOfBalanceAccountsByPeriodAndBusinessAndAccount( _period, _user_business, _account, _amount );
 
                 return true;
 
@@ -68,13 +72,7 @@ public class BalanceAccountsController {
             System.out.println("Insert record of Accounts Balance");
             try {
 
-                balanceAccountsRepository.insertBalanceAccounts(balanceAccounts.getId().getMonthly_period(),
-                                                                balanceAccounts.getId().getUser_business_id(),
-                                                                balanceAccounts.getId().getAccount_id(),
-                                                                balanceAccounts.getAmount());
-
-
-                /* balanceAccountsRepository.save(balanceAccounts); */
+                balanceAccountsRepository.insertBalanceAccounts( _period, _user_business, _account, _amount );
 
                 return true;
 
